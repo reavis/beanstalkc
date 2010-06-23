@@ -114,6 +114,8 @@ class Connection(object):
     # -- public interface --
 
     def put(self, body, priority=DEFAULT_PRIORITY, delay=0, ttr=DEFAULT_TTR):
+        if isinstance(body, unicode):  # beanstalk cant' handle unicode
+            body = body.encode()  # Attempt to convert to ASCII
         assert isinstance(body, str), 'Job body must be a str instance'
         jid = self._interact_value(
                 'put %d %d %d %d\r\n%s\r\n' %
